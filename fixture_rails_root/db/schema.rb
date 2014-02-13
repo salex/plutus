@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 20120514173712) do
     t.boolean  "contra"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "tenant_id"
   end
 
   add_index "plutus_accounts", ["name", "type"], :name => "index_plutus_accounts_on_name_and_type"
@@ -28,6 +29,7 @@ ActiveRecord::Schema.define(:version => 20120514173712) do
     t.integer "account_id"
     t.integer "transaction_id"
     t.decimal "amount",         :precision => 20, :scale => 10
+    t.integer "tenant_id"
   end
 
   add_index "plutus_amounts", ["account_id", "transaction_id"], :name => "index_plutus_amounts_on_account_id_and_transaction_id"
@@ -40,8 +42,16 @@ ActiveRecord::Schema.define(:version => 20120514173712) do
     t.string   "commercial_document_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "tenant_id"
+
   end
 
   add_index "plutus_transactions", ["commercial_document_id", "commercial_document_type"], :name => "index_transactions_on_commercial_doc"
+  create_table "tenants", force: true do |t|
+    t.string   "name"
+    t.string   "subdomain"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
 end

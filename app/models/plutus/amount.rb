@@ -8,7 +8,14 @@ module Plutus
   class Amount < ActiveRecord::Base
     belongs_to :transaction
     belongs_to :account
+    default_scope {where(tenant_id:Tenantable.tenant)}
 
     validates_presence_of :type, :amount, :transaction, :account
+
+    before_create :set_tenantable
+    def set_tenantable
+      Tenantable.set_tenant(self)
+    end
+
   end
 end

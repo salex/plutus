@@ -27,11 +27,17 @@ module Plutus
     has_many :debit_amounts, :extend => AmountsExtension
     has_many :credit_accounts, :through => :credit_amounts, :source => :account
     has_many :debit_accounts, :through => :debit_amounts, :source => :account
+    default_scope {where(tenant_id:Tenantable.tenant)}
 
     validates_presence_of :description
     validate :has_credit_amounts?
     validate :has_debit_amounts?
     validate :amounts_cancel?
+
+    before_create :set_tenantable
+    def set_tenantable
+      Tenantable.set_tenant(self)
+    end
 
 
     # Simple API for building a transaction and associated debit and credit amounts
@@ -47,11 +53,14 @@ module Plutus
     #
     # @return [Plutus::Transaction] A Transaction with built credit and debit objects ready for saving
     def self.build(hash)
-      transaction = Transaction.new(:description => hash[:description], :commercial_document => hash[:commercial_document])
+      transaction = Transaction.new(:description => hash[:description], 
+        :commercial_document => hash[:commercial_document])
+
       hash[:debits].each do |debit|
         a = Account.find_by_name(debit[:account])
         transaction.debit_amounts << DebitAmount.new(:account => a, :amount => debit[:amount], :transaction => transaction)
       end
+
       hash[:credits].each do |credit|
         a = Account.find_by_name(credit[:account])
         transaction.credit_amounts << CreditAmount.new(:account => a, :amount => credit[:amount], :transaction => transaction)

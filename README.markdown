@@ -37,14 +37,14 @@ This fork is an attempt at implementing multi-tenancy for Plutus
 
 - `tenant_id` was added to all Plutus model, but Account is not implemented, allowing tenants to share accounts
 
-- an example Tenant model added to demo (name,subdomain)
+- an example Tenant model added to demo (name,subdomain attributes)
 
-- 'acts\_as\_tenant' gem added to gemspec developer dependancies. Current tenant set in application controller to subdomain
+- 'acts\_as\_tenant' gem added to gemspec developer dependancies. Current tenant set in application controller by subdomain
 
 - dummy app (fixture\_rails\_root directory) contains demo app (upgraded to rails 4)
     - Bundle `bundle`
     - run migrations `rake db:migrate`
-    - seed demo data `rake db:seed` sets up subdomain tenants cust1 and cust2
+    - seed demo data `rake db:seed` sets up subdomain tenants cust1 and cust2 and a few accounts and transactions
     - run WEBrick  `rails s`
     - try  cust1.lvh.me:3000  (root shows tenants)
     - try cust1.lvh.me:3000/plutus/accounts (shows accounts for cust1)
@@ -55,7 +55,7 @@ This fork is an attempt at implementing multi-tenancy for Plutus
     - before\_create filter added to Amount and Transaction to set tenant\_id (from current\_tenant or nil)
     - default\_scope added to Amount and Transaction to filter by tenant_id
     
-- Most work (very little) done in plutus/app/models/concerns/plutus/tenantable.rb
+- Most work (very little) done in [tenantable.rb](https://github.com/salex/plutus/blob/master/app/models/concerns/plutus/tenantable.rb)
 
 Overview
 ========

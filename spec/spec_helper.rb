@@ -1,4 +1,5 @@
 require 'factory_girl'
+require 'acts_as_tenant'
 
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path(File.dirname(__FILE__) + "/../fixture_rails_root/config/environment")

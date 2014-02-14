@@ -1,5 +1,8 @@
 test.sqlite3
 spec/debug.log
+/tmp/
+fixture_rails_root/tmp/
+*.log
 .DS_Store
 .yardoc/
 pkg/

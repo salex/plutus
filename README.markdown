@@ -37,7 +37,7 @@ This fork is an attempt at implementing multi-tenancy for Plutus
 
 - `tenant_id` was added to all Plutus model, but Account is not implemented, allowing tenants to share accounts
 
-- an example Tenant model added to demo (name,subdomain attributes)
+- an example Tenant model added to dummy/demo/fixture_rails_root (name,subdomain attributes)
 
 - 'acts\_as\_tenant' gem added to gemspec developer dependancies. Current tenant set in application controller by subdomain
 
@@ -49,13 +49,21 @@ This fork is an attempt at implementing multi-tenancy for Plutus
     - try  cust1.lvh.me:3000  (root shows tenants)
     - try cust1.lvh.me:3000/plutus/accounts (shows accounts for cust1)
     - try cust2.lvh.me:3000/plutus/accounts (shows accounts for cust2)
-    - try lvh.me:3000/plutus/accounts (no subdomain, no data, just accounts)
+    - try lvh.me:3000/plutus/accounts (no subdomain, data not filtered, all Amounts and Transactions)
+        - can be set in acts_as_tenant to always require a tenant_id if desired
     
 - Other changes to Plutus
-    - before\_create filter added to Amount and Transaction to set tenant\_id (from current\_tenant or nil)
-    - default\_scope added to Amount and Transaction to filter by tenant_id
-    
-- Most work (very little) done in [tenantable.rb](https://github.com/salex/plutus/blob/master/app/models/concerns/plutus/tenantable.rb)
+    - Amount model modified to set option `class_name`
+
+Amount
+
+    class Amount < ActiveRecord::Base
+      belongs_to :transaction, class_name:"Plutus::Transaction"
+      belongs_to :account, class_name:"Plutus::Account"
+
+      validates_presence_of :type, :amount, :transaction, :account
+    end
+
 
 Overview
 ========
